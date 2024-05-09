@@ -18,13 +18,17 @@ const router = express.Router()
 const service = new PokemonService()
 
 // Ruta Post guarda un pokemon en la base de datos
-router.post('/', async (req, res) => {
-  const pokemon: Pokemon = req.body
-  //se crea al pokemon, y se guarda en la instancia newPokemon
-  const newPokemon = await service.create(pokemon)
-  //Envió la respuesta al cliente con ‘res’ y envió una respuesta del objeto newPokemon en formato JSON con código de estado 201
-  res.status(201).json(newPokemon)
-})
+router.post(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const pokemon: Pokemon = req.body
+    //se crea al pokemon, y se guarda en la instancia newPokemon
+    const newPokemon = await service.create(pokemon)
+    //Envió la respuesta al cliente con ‘res’ y envió una respuesta del objeto newPokemon en formato JSON con código de estado 201
+    res.status(201).json(newPokemon)
+  }
+)
 
 // Rutas GET consulta pokemon
 router.get(
