@@ -16,6 +16,8 @@ import { config } from './config/config'
 import passport from 'passport'
 // importo el archivo que contiene las estrategias de autenticación ./utils/auth/index.ts NO SE PONE index.ts
 import './utils/auth'
+// importo la dependencia de cors
+import cors from 'cors'
 
 // establesco las variables para configuraciones
 const { mongoUri, port } = config
@@ -26,6 +28,8 @@ const MONGO_URI = mongoUri
 const app = express()
 // hacer que la app pueda recibir json con el middleware
 app.use(express.json())
+// hago que la aplicación utilice cors
+app.use(cors())
 // hago que la app inicie passport
 app.use(passport.initialize())
 // hacer que routerApi sepa que utlizando la aplicacion "app"
