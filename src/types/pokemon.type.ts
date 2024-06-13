@@ -1,7 +1,7 @@
 // pokemon.type.ts
-import type { Model } from 'mongoose'
+import type { Schema, Model } from 'mongoose'
 // importo el tipo Generation
-import { Generation } from './generation.type '
+import { Generation } from './generation.type'
 // Existen dos "tipos" de datos (los cuales exporto)
 // Datos o propiedades de un Pokemon
 export type Pokemon = {
@@ -11,6 +11,8 @@ export type Pokemon = {
   weight: string
   height: string
   generation: Generation //agregue generation de tipo Generation
+  evolutions?: Schema.Types.ObjectId[] | null // Referencias a evoluciones
+  preEvolutions?: Schema.Types.ObjectId[] | null // Referencias a pre-evoluciones
 }
 // Tambien existe el modelo del pokemon, (el modelo tendra más cosas,
 // tendrá todo lo que mongo le asigne, como metodos para agregar

@@ -1,3 +1,5 @@
+// config.ts
+
 // servicio para leer el archivo .env
 import dotenv from 'dotenv'
 // leer el archivo.env (ejecuto el servicio)

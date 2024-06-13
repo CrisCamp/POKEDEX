@@ -5,7 +5,7 @@ import {
   Generation,
   GenerationMethods,
   GenerationModel
-} from '../types/generation.type '
+} from '../types/generation.type'
 export const GENERATION_POKEMON_REFERENCE = 'Generation'
 
 const Generations = new Schema<Generation, GenerationModel, GenerationMethods>({

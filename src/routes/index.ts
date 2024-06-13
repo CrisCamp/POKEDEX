@@ -10,6 +10,8 @@ import UserRouter from './user.route'
 import AuthRouter from './auth.route'
 // importo el router GenerationRouter
 import GenerationRouter from './generation.route'
+// importo el router EvolutionRouter
+import EvolutionRouter from './evolution.route'
 
 // funcion que recibe la aplicación
 const routerApi = (app) => {
@@ -23,8 +25,10 @@ const routerApi = (app) => {
   router.use('/users', UserRouter)
   // subrouter auth
   router.use('/auth', AuthRouter)
-  // subrouter auth
+  // subrouter generations
   router.use('/generations', GenerationRouter)
+  // subrouter evolutions
+  router.use('/evolutions', EvolutionRouter)
 }
 
 // exporto para que pueda comunicarse con el archivo app.ts

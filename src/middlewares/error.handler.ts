@@ -1,3 +1,5 @@
+// error.handler.ts
+
 // se recibe el error, pero como es parte de la ejecución de rutas tambien se
 // recibe el req y el res pero no se utilizaran, para no utilizar de manera
 // obligatoria una variable definida en los parametros JavaScript y en TypeScript,

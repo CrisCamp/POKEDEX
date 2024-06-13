@@ -46,6 +46,7 @@ class PokemonService {
   async findAll() {
     const pokemons = await Pokemons.find()
       .populate('generation')
+      .populate('evolutions preEvolutions')
       .catch((error) => {
         // Ahora este error sería de mongo
         console.log('Error while connecting to the DB', error)

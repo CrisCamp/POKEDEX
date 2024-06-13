@@ -1,13 +1,11 @@
 {
-    "compilerOptions": {
-        "module": "CommonJS", //Puede ser también ES6
-        "esModuleInterop": true, //Este es para que pueda trabajar con varias versiones
-        "target": "ES6",
-        "moduleResolution": "node", //Resoluciones
-        "sourceMap": true, //Proceso que ayudara a ver nuestro código, al momento de transpilar de typescript a javascript
-        "outDir": "dist", //es para ver donde se guardará el proyecto
-    },
-    "lib": [
-        "es2015"
-    ],
+  "compilerOptions": {
+    "module": "CommonJS", //Puede ser también ES6
+    "esModuleInterop": true, //Este es para que pueda trabajar con varias versiones
+    "target": "ES6",
+    "moduleResolution": "node", //Resoluciones
+    "sourceMap": true, //Proceso que ayudara a ver nuestro código, al momento de transpilar de typescript a javascript
+    "outDir": "dist" //es para ver donde se guardará el proyecto
+  },
+  "lib": ["es2015"]
 }

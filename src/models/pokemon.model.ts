@@ -5,6 +5,7 @@ import { Schema, model } from 'mongoose'
 import { Pokemon, PokemonModel } from '../types/pokemon.type'
 // importo la referecia de Generation
 import { GENERATION_POKEMON_REFERENCE } from './generation.model'
+import { EVOLUTION_POKEMON_REFERENCE } from './evolution.model'
 
 // nombre con el que voy a referir en el servicio
 export const POKEMON_REFERENCE = 'Pokemon'
@@ -48,7 +49,19 @@ const Pokemons = new Schema<Pokemon, PokemonModel>({
     type: Schema.Types.ObjectId,
     // especifico la referencia
     ref: GENERATION_POKEMON_REFERENCE
-  }
+  },
+  evolutions: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Pokemon'
+    }
+  ],
+  preEvolutions: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Pokemon'
+    }
+  ]
 })
 // Después de tener el squema hecho lo exporto, se crea un modelo a partir de dicho esquema
 export default model(POKEMON_REFERENCE, Pokemons)

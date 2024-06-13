@@ -1,19 +1,19 @@
-//generation.service.ts
+// generation.service.ts
 
 import Generations from '../models/generation.model'
-import { Generation } from '../types/generation.type '
+import { Generation } from '../types/generation.type'
 import boom from '@hapi/boom'
 
 class GenerationService {
-  // Metodo para crear una generación
+  // Método para crear una generación
   async create(generation: Generation) {
     const newGeneration = await Generations.create(generation).catch(
       (error) => {
         console.log('Error while connecting to the DB', error)
+        throw boom.badImplementation('Database connection error')
       }
     )
 
-    //envio error en caso de no crear el generation
     if (!newGeneration) {
       throw boom.badRequest('Could not create generation')
     }
@@ -21,23 +21,25 @@ class GenerationService {
     return newGeneration
   }
 
-  //Metodo para que encuentre todo
+  // Método para encontrar todas las generaciones
   async findAll() {
     const generations = await Generations.find().catch((error) => {
-      // Ahora este error sería de mongo
       console.log('Error while connecting to the DB', error)
+      throw boom.badImplementation('Database connection error')
     })
-    // Si no existen generations manda el error
-    if (!generations) {
-      throw boom.notFound('There are not generations')
+
+    if (!generations || generations.length === 0) {
+      throw boom.notFound('There are no generations')
     }
+
     return generations
   }
 
-  // Metodo para buscar por id
+  // Método para buscar una generación por ID
   async findById(id: string) {
     const generation = await Generations.findById(id).catch((error) => {
       console.log('Error while connecting to the DB', error)
+      throw boom.badImplementation('Database connection error')
     })
 
     if (!generation) {
@@ -47,11 +49,12 @@ class GenerationService {
     return generation
   }
 
-  // Metodo para buscar por nombre de generación
+  // Método para buscar una generación por número
   async findByGeneration(generation: number) {
     const generationData = await Generations.findOne({ generation }).catch(
       (error) => {
         console.log('Could not retrieve generation info', error)
+        throw boom.badImplementation('Database connection error')
       }
     )
 
@@ -60,6 +63,42 @@ class GenerationService {
     }
 
     return generationData
+  }
+
+  // Método para actualizar una generación por ID
+  async updateById(id: string, updateData: Partial<Generation>) {
+    const updatedGeneration = await Generations.findByIdAndUpdate(
+      id,
+      updateData,
+      {
+        new: true
+      }
+    ).catch((error) => {
+      console.log('Error while connecting to the DB', error)
+      throw boom.badImplementation('Database connection error')
+    })
+
+    if (!updatedGeneration) {
+      throw boom.notFound('Generation not found or could not be updated')
+    }
+
+    return updatedGeneration
+  }
+
+  // Método para eliminar una generación por ID
+  async deleteById(id: string) {
+    const deletedGeneration = await Generations.findByIdAndDelete(id).catch(
+      (error) => {
+        console.log('Error while connecting to the DB', error)
+        throw boom.badImplementation('Database connection error')
+      }
+    )
+
+    if (!deletedGeneration) {
+      throw boom.notFound('Generation not found or could not be deleted')
+    }
+
+    return deletedGeneration
   }
 }
 
