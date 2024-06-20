@@ -10,7 +10,6 @@ import type { Request } from 'express'
 export type User = ToClientUser & {
   //composicion
   password: string
-  role: string
   // en una bdd por cuestiones de auditorias se agrega:
   // cuando fue creado
   createdAt?: Date
@@ -29,6 +28,7 @@ export type ToClientUser = {
   email: string
   address: string
   phoneNumber: string
+  role: string
 }
 
 // UserMethods tiene una función llamada toClient que es una función que retorna

@@ -64,7 +64,8 @@ Users.methods.toClient = function () {
     name: this.name,
     email: this.email,
     address: this.address,
-    phoneNumber: this.phoneNumber
+    phoneNumber: this.phoneNumber,
+    role: this.role
   }
 } // este metodo debe de estar definido en el tipo
 
