@@ -90,7 +90,73 @@ class PokemonService {
 
     return pokemon // Devolver el Pokémon encontrado
   }
-} // Este metodo se encarga de encontrar todos los pokemons
 
+  // Método para actualizar un Pokémon por ID
+  async updateById(id: string, updateData: Partial<Pokemon>) {
+    // Validar si la generación existe
+    if (updateData.generation) {
+      const generation = await Generation.findOne({
+        generation: updateData.generation
+      })
+
+      if (!generation) {
+        throw boom.badRequest('The pokemon generation does not exist')
+      }
+
+      // Transformar el número de generación a su ID correspondiente
+      updateData.generation = generation.id
+    }
+
+    // Actualizar el Pokémon en la base de datos
+    const updatedPokemon = await Pokemons.findByIdAndUpdate(id, updateData, {
+      new: true
+    }).catch((error) => {
+      console.log('Error while connecting to the DB', error)
+      throw boom.badImplementation('Database connection error')
+    })
+
+    if (!updatedPokemon) {
+      throw boom.notFound('Pokémon not found or could not be updated')
+    }
+
+    return updatedPokemon
+  }
+
+  // Eliminar un Pokémon por ID
+  async deleteById(id: string) {
+    // Buscar todos los pokemons que tengan el pokemon a eliminar en evolutions
+    const pokemonsWithEvolutions = await Pokemons.find({
+      evolutions: id
+    }).exec()
+    for (const pokemon of pokemonsWithEvolutions) {
+      // Remover la referencia del pokemon a eliminar de su lista de evolutions
+      pokemon.evolutions = pokemon.evolutions.filter(
+        (evoId) => evoId.toString() !== id
+      )
+      await pokemon.save()
+    }
+
+    // Buscar todos los pokemons que tengan el pokemon a eliminar en preEvolutions
+    const pokemonsWithPreEvolutions = await Pokemons.find({
+      preEvolutions: id
+    }).exec()
+    for (const pokemon of pokemonsWithPreEvolutions) {
+      // Remover la referencia del pokemon a eliminar de su lista de preEvolutions
+      pokemon.preEvolutions = pokemon.preEvolutions.filter(
+        (preEvoId) => preEvoId.toString() !== id
+      )
+      await pokemon.save()
+    }
+
+    // Finalmente, eliminar el pokemon
+    const deletedPokemon = await Pokemons.findByIdAndDelete(id).exec()
+
+    if (!deletedPokemon) {
+      throw boom.notFound('Pokémon not found or could not be deleted')
+    }
+
+    return deletedPokemon
+  }
+} // Este metodo se encarga de encontrar todos los pokemons
 //Exportar la clase para poder acceder desde fuera
 export default PokemonService

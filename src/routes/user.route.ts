@@ -31,11 +31,37 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-// Buscar por email
+// Buscar usuario por email
 router.get('/:email', async (req, res, next) => {
   try {
     const user = await service.findByEmail(req.params.email)
     res.status(200).json({ user: user.toClient() })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// Actualizar usuario por ID
+router.put('/:id', async (req, res, next) => {
+  try {
+    const updateData: Partial<User> = req.body
+    const updatedUser = await service.updateById(req.params.id, updateData)
+    res.status(200).json({ user: updatedUser.toClient() })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// Eliminar usuario por ID
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const deletedUser = await service.deleteById(req.params.id)
+    res
+      .status(200)
+      .json({
+        message: 'User deleted successfully',
+        user: deletedUser.toClient()
+      })
   } catch (error) {
     next(error)
   }

@@ -30,7 +30,7 @@ router.post(
   }
 )
 
-// Rutas GET consulta pokemon
+// Ruta Get para obtener todos los Pokémon
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
@@ -48,6 +48,7 @@ router.get(
   }
 )
 
+// Ruta Get para obtener un Pokémon por ID
 router.get(
   '/id/:id',
   passport.authenticate('jwt', { session: false }),
@@ -63,6 +64,8 @@ router.get(
     }
   }
 )
+
+// Ruta Get para obtener un Pokémon por nombre
 router.get(
   '/name/:name',
   passport.authenticate('jwt', { session: false }),
@@ -74,6 +77,38 @@ router.get(
       res.status(200).json(pokemon)
     } catch (error) {
       // si hay un error, pasarlo al middleware
+      next(error)
+    }
+  }
+)
+
+// Ruta Put para actualizar un Pokémon por ID
+router.put(
+  '/id/:id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const updateData: Partial<Pokemon> = req.body
+      const updatedPokemon = await service.updateById(req.params.id, updateData)
+      res.status(200).json(updatedPokemon)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
+// Ruta Delete para eliminar un Pokémon por ID
+router.delete(
+  '/id/:id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const deletedPokemon = await service.deleteById(req.params.id)
+      res.status(200).json({
+        message: 'Pokemon deleted successfully',
+        pokemon: deletedPokemon
+      })
+    } catch (error) {
       next(error)
     }
   }

@@ -7,12 +7,11 @@ import EvolutionService from '../services/evolution.service'
 const router = express.Router()
 const service = new EvolutionService()
 
-// crear evolucion en la BD
+// Crear evolucion en la BD
 router.post('/', async (req, res, next) => {
   try {
     const evolution: Evolution = req.body
     const newEvolution = await service.create(evolution)
-    console.log(newEvolution)
     res.status(201).json({ evolution: newEvolution.toClient() })
   } catch (error) {
     next(error)
@@ -23,7 +22,7 @@ router.post('/', async (req, res, next) => {
 router.get('/', async (req, res, next) => {
   try {
     const evolutions = await service.findAll()
-    res.status(200).json(evolutions)
+    res.status(200).json(evolutions.map((evo) => evo.toClient()))
   } catch (error) {
     next(error)
   }
@@ -43,7 +42,31 @@ router.get('/id/:id', async (req, res, next) => {
 router.get('/level/:level', async (req, res, next) => {
   try {
     const level = await service.findByLevel(parseInt(req.params.level))
-    res.status(200).json({ level: level.toClient() })
+    res.status(200).json({ evolution: level.toClient() })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// Actualizar evolucion por ID
+router.put('/id/:id', async (req, res, next) => {
+  try {
+    const updateData: Partial<Evolution> = req.body
+    const updatedEvolution = await service.updateById(req.params.id, updateData)
+    res.status(200).json({ evolution: updatedEvolution.toClient() })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// Eliminar evolucion por ID
+router.delete('/id/:id', async (req, res, next) => {
+  try {
+    const deletedEvolution = await service.deleteById(req.params.id)
+    res.status(200).json({
+      message: 'Evolution deleted successfully',
+      evolution: deletedEvolution.toClient()
+    })
   } catch (error) {
     next(error)
   }

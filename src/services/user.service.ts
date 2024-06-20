@@ -31,23 +31,25 @@ class UserService {
     return newUser
   }
 
-  // Función extra buscar todos los usuarios
+  // Función buscar todos los usuarios
   async findAll() {
     const users = await Users.find().catch((error) => {
-      // Ahora este error sería de mongo
       console.log('Error while connecting to the DB', error)
+      throw boom.badImplementation('Database connection error')
     })
-    // Si no existen pokemons manda el error
-    if (!users) {
-      throw boom.notFound('There are not users')
+
+    if (!users || users.length === 0) {
+      throw boom.notFound('There are no users')
     }
+
     return users
   }
 
-  // Función para buscar por correo
+  // Función buscar por correo
   async findByEmail(email: string) {
     const user = await Users.findOne({ email }).catch((error) => {
       console.log('Error while connecting to the DB', error)
+      throw boom.badImplementation('Database connection error')
     })
 
     if (!user) {
@@ -55,6 +57,39 @@ class UserService {
     }
 
     return user
+  }
+
+  // Función actualizar usuario por ID
+  async updateById(id: string, updateData: Partial<User>) {
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10)
+    }
+    const updatedUser = await Users.findByIdAndUpdate(id, updateData, {
+      new: true
+    }).catch((error) => {
+      console.log('Error while connecting to the DB', error)
+      throw boom.badImplementation('Database connection error')
+    })
+
+    if (!updatedUser) {
+      throw boom.notFound('User not found or could not be updated')
+    }
+
+    return updatedUser
+  }
+
+  // Función eliminar usuario por ID
+  async deleteById(id: string) {
+    const deletedUser = await Users.findByIdAndDelete(id).catch((error) => {
+      console.log('Error while connecting to the DB', error)
+      throw boom.badImplementation('Database connection error')
+    })
+
+    if (!deletedUser) {
+      throw boom.notFound('User not found or could not be deleted')
+    }
+
+    return deletedUser
   }
 }
 
