@@ -10,6 +10,7 @@ import PokemonService from '../services/pokemon.service'
 import passport from 'passport'
 // importo el tipo UserRequestType para obtener el usuario por medio del request
 import { UserRequestType } from '../types/user.type'
+import { authorize } from '../middlewares/authorization'
 
 //obtener el router de express, se necesita para crear una subruta en esta sección
 const router = express.Router()
@@ -21,12 +22,17 @@ const service = new PokemonService()
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
-  async (req, res) => {
-    const pokemon: Pokemon = req.body
-    //se crea al pokemon, y se guarda en la instancia newPokemon
-    const newPokemon = await service.create(pokemon)
-    //Envió la respuesta al cliente con ‘res’ y envió una respuesta del objeto newPokemon en formato JSON con código de estado 201
-    res.status(201).json(newPokemon)
+  authorize(['admin']), // Solo los administradores pueden agregar Pokémon
+  async (req: UserRequestType, res, next) => {
+    try {
+      const pokemon: Pokemon = req.body
+      //se crea al pokemon, y se guarda en la instancia newPokemon
+      const newPokemon = await service.create(pokemon)
+      //Envió la respuesta al cliente con ‘res’ y envió una respuesta del objeto newPokemon en formato JSON con código de estado 201
+      res.status(201).json(newPokemon)
+    } catch (error) {
+      next(error)
+    }
   }
 )
 
@@ -34,10 +40,11 @@ router.post(
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
+  authorize(['user', 'admin']), // Los usuarios normales y administradores pueden consultar Pokémon
   async (req: UserRequestType, res, next) => {
     try {
       const { user } = req
-      //console.log(user) // console.log para mostrar los datos del paylot (id) del usuario en la terminal
+      console.log(user) // console.log para mostrar los datos del paylot (id) del usuario en la terminal
       //busca todos lo pokemons
       const pokemons = await service.findAll()
       //200 por que busca si existen pokemons en el modelo
@@ -52,7 +59,8 @@ router.get(
 router.get(
   '/id/:id',
   passport.authenticate('jwt', { session: false }),
-  async (req, res, next) => {
+  authorize(['user', 'admin']), // Los usuarios normales y administradores pueden consultar Pokémon por ID
+  async (req: UserRequestType, res, next) => {
     try {
       //busca a un pokemon por id
       const pokemon = await service.findById(req.params.id)
@@ -69,7 +77,8 @@ router.get(
 router.get(
   '/name/:name',
   passport.authenticate('jwt', { session: false }),
-  async (req, res, next) => {
+  authorize(['user', 'admin']), // Los usuarios normales y administradores pueden consultar Pokémon por nombre
+  async (req: UserRequestType, res, next) => {
     try {
       // busca un Pokémon por nombre
       const pokemon = await service.findByName(req.params.name)
@@ -86,7 +95,8 @@ router.get(
 router.put(
   '/id/:id',
   passport.authenticate('jwt', { session: false }),
-  async (req, res, next) => {
+  authorize(['admin']), // Solo los administradores pueden actualizar Pokémon
+  async (req: UserRequestType, res, next) => {
     try {
       const updateData: Partial<Pokemon> = req.body
       const updatedPokemon = await service.updateById(req.params.id, updateData)
@@ -101,7 +111,8 @@ router.put(
 router.delete(
   '/id/:id',
   passport.authenticate('jwt', { session: false }),
-  async (req, res, next) => {
+  authorize(['admin']), // Solo los administradores pueden eliminar Pokémon
+  async (req: UserRequestType, res, next) => {
     try {
       const deletedPokemon = await service.deleteById(req.params.id)
       res.status(200).json({

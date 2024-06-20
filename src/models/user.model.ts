@@ -38,6 +38,12 @@ const Users = new Schema<User, UserModel, UserMethods>({
     // le paso el arreglo de las expresions regulares que debe cumplir, y un mensaje en caso de que no sea valido
     match: [PHONE_NUMBER_REGEX, 'Please enter a valid phone number']
   },
+  role: {
+    type: String,
+    required: true,
+    enum: ['admin', 'user'],
+    default: 'user'
+  },
   createdAt: {
     type: Date,
     default: () => Date.now()

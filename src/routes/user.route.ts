@@ -11,7 +11,7 @@ const router = express.Router()
 const service = new UserService()
 
 // crear usuario en la BD
-router.post('/', async (req, res, next) => {
+router.post('/register', async (req, res, next) => {
   try {
     const user: User = req.body
     const newUser = await service.create(user)
@@ -56,12 +56,10 @@ router.put('/:id', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
   try {
     const deletedUser = await service.deleteById(req.params.id)
-    res
-      .status(200)
-      .json({
-        message: 'User deleted successfully',
-        user: deletedUser.toClient()
-      })
+    res.status(200).json({
+      message: 'User deleted successfully',
+      user: deletedUser.toClient()
+    })
   } catch (error) {
     next(error)
   }

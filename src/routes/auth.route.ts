@@ -28,7 +28,7 @@ router.post(
       const { user } = req
       //console.log(user) //console.log para mostrar los datos completos del usuario en la terminal
       // sub is the id of the subscribed user
-      const payload = { sub: user.id }
+      const payload = { sub: user.id, role: user.role }
       // la variable jwt tiene un metodo llamado sign de firmar
       // dicha función recibirá el payload que va a firmar y el secreto
       // esta función es la crea el token

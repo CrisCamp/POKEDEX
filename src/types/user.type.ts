@@ -10,6 +10,7 @@ import type { Request } from 'express'
 export type User = ToClientUser & {
   //composicion
   password: string
+  role: string
   // en una bdd por cuestiones de auditorias se agrega:
   // cuando fue creado
   createdAt?: Date
