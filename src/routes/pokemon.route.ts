@@ -91,6 +91,66 @@ router.get(
   }
 )
 
+// Buscar por Tipo
+router.get(
+  '/type/:type',
+  passport.authenticate('jwt', { session: false }),
+  authorize(['user', 'admin']), // Los usuarios normales y administradores pueden consultar Pokémon por nombre
+  async (req, res, next) => {
+    try {
+      const pokemons = await service.findByType(req.params.type)
+      res.status(200).json(pokemons)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
+// Buscar por Peso
+router.get(
+  '/weight/:weight',
+  passport.authenticate('jwt', { session: false }),
+  authorize(['user', 'admin']), // Los usuarios normales y administradores pueden consultar Pokémon por nombre
+  async (req, res, next) => {
+    try {
+      const pokemons = await service.findByWeight(req.params.weight)
+      res.status(200).json(pokemons)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
+// Buscar por Altura
+router.get(
+  '/height/:height',
+  passport.authenticate('jwt', { session: false }),
+  authorize(['user', 'admin']), // Los usuarios normales y administradores pueden consultar Pokémon por nombre
+  async (req, res, next) => {
+    try {
+      const pokemons = await service.findByHeight(req.params.height)
+      res.status(200).json(pokemons)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
+// Buscar por Generación
+router.get(
+  '/generation/:generation',
+  passport.authenticate('jwt', { session: false }),
+  authorize(['user', 'admin']), // Los usuarios normales y administradores pueden consultar Pokémon por nombre
+  async (req, res, next) => {
+    try {
+      const pokemons = await service.findByGeneration(req.params.generation)
+      res.status(200).json(pokemons)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
 // Ruta Put para actualizar un Pokémon por ID
 router.put(
   '/id/:id',

@@ -42,7 +42,7 @@ class EvolutionService {
   // Método para encontrar todas las evoluciones
   async findAll() {
     const evolutions = await Evolutions.find()
-      .populate('basePokemonId evolvesToPokemonId')
+      // .populate('basePokemonId evolvesToPokemonId')
       .catch((error) => {
         console.log('Error while connecting to the DB', error)
         throw boom.badImplementation('Database connection error')

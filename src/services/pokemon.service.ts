@@ -60,9 +60,12 @@ class PokemonService {
 
   //Metodo para que encuentre por ID
   async findById(id: string) {
-    const pokemon = await Pokemons.findById(id).catch((error) => {
-      console.log('Error while connecting to the DB', error)
-    })
+    const pokemon = await Pokemons.findById(id)
+      .populate('generation')
+      .populate('evolutions preEvolutions')
+      .catch((error) => {
+        console.log('Error while connecting to the DB', error)
+      })
     // Si no existe el id del pokemon manda el error
     if (!pokemon) {
       throw boom.notFound('Pokémon not found with id: ' + id)
@@ -79,7 +82,7 @@ class PokemonService {
     // el primer 'name' representa el atributo del objeto guardado en el modelo y el segundo 'name'
     // la variable en el parametro, pero ya que ambas 'por asi decirlo' se llaman igual la declaración en la
     // función se puede dejar asi: findOne({ name })
-    const pokemon = await Pokemons.findOne({ name }).catch((error) => {
+    const pokemon = await Pokemons.find({ name }).catch((error) => {
       console.log('Error while connecting to the DB', error)
     })
 
@@ -89,6 +92,58 @@ class PokemonService {
     }
 
     return pokemon // Devolver el Pokémon encontrado
+  }
+
+  // Método para buscar por tipo
+  async findByType(type: string) {
+    const pokemons = await Pokemons.find({ type }).catch((error) => {
+      console.log('Error while connecting to the DB', error)
+    })
+    if (!pokemons) {
+      throw boom.notFound('Pokémons not found with type: ' + type)
+    }
+    return pokemons
+  }
+
+  // Método para buscar por peso
+  async findByWeight(weight: string) {
+    const pokemons = await Pokemons.find({ weight }).catch((error) => {
+      console.log('Error while connecting to the DB', error)
+    })
+    if (!pokemons) {
+      throw boom.notFound('Pokémons not found with weight: ' + weight)
+    }
+    return pokemons
+  }
+
+  // Método para buscar por altura
+  async findByHeight(height: string) {
+    const pokemons = await Pokemons.find({ height }).catch((error) => {
+      console.log('Error while connecting to the DB', error)
+    })
+    if (!pokemons) {
+      throw boom.notFound('Pokémons not found with height: ' + height)
+    }
+    return pokemons
+  }
+
+  // Método para buscar por generación
+  async findByGeneration(generationQuery: string | number) {
+    const generation = await Generation.findOne({ generation: generationQuery })
+    if (!generation) {
+      throw boom.badRequest('The pokemon generation does not exist')
+    }
+    const pokemons = await Pokemons.find({ generation: generation.id }).catch(
+      (error) => {
+        console.log('Error while connecting to the DB', error)
+      }
+    )
+    if (!pokemons) {
+      throw boom.notFound(
+        'Pokémons not found for generation: ' + generationQuery
+      )
+    }
+    return pokemons
   }
 
   // Método para actualizar un Pokémon por ID
